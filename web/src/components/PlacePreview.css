@@ -30,6 +30,13 @@
   color: #fff;
   font-size: 1.2rem;
 }
+.preview__photo {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+}
 .preview__titles {
   flex: 1;
   min-width: 0;

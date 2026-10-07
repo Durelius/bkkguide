@@ -6,7 +6,10 @@ import { AccountPage } from "./AccountPage";
 import { AdminsPage } from "./AdminsPage";
 import { adminApi, ApiError } from "./api";
 import { AuditPage } from "./AuditPage";
+import { CategoriesPage } from "./CategoriesPage";
 import { LoginPage } from "./LoginPage";
+import { PlaceEditor } from "./PlaceEditor";
+import { PlacesPage } from "./PlacesPage";
 import "./admin.css";
 
 export function AdminApp() {
@@ -14,11 +17,14 @@ export function AdminApp() {
     <Routes>
       <Route path="login" element={<LoginPage />} />
       <Route element={<AdminShell />}>
-        <Route index element={<Navigate to="admins" replace />} />
+        <Route index element={<Navigate to="places" replace />} />
+        <Route path="places" element={<PlacesPage />} />
+        <Route path="places/:id" element={<PlaceEditor />} />
+        <Route path="categories" element={<CategoriesPage />} />
         <Route path="admins" element={<AdminsPage />} />
         <Route path="log" element={<AuditPage />} />
         <Route path="account" element={<AccountPage />} />
-        <Route path="*" element={<Navigate to="admins" replace />} />
+        <Route path="*" element={<Navigate to="places" replace />} />
       </Route>
     </Routes>
   );
@@ -53,6 +59,12 @@ function AdminShell() {
           <Logo compact />
         </a>
         <nav className="admin__nav" aria-label="Admin">
+          <NavLink to="/admin/places" className="admin__navlink">
+            <Icon name="map-marker" /> Places
+          </NavLink>
+          <NavLink to="/admin/categories" className="admin__navlink">
+            <Icon name="tag" /> Categories
+          </NavLink>
           <NavLink to="/admin/admins" className="admin__navlink">
             <Icon name="user" /> Admins
           </NavLink>

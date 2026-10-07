@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -65,8 +66,17 @@ type Place struct {
 	GoogleMapsURL  string           `json:"googleMapsUrl"`
 	Featured       bool             `json:"featured"`
 	Hours          []hours.Interval `json:"hours"`
+	Photos         []Photo          `json:"photos"`
 	OpenNow        bool             `json:"openNow"`
 	ClosesAt       string           `json:"closesAt,omitempty"`
+}
+
+type Photo struct {
+	Thumb  string `json:"thumb"`
+	Large  string `json:"large"`
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+	Alt    string `json:"alt"`
 }
 
 func (a *API) config(w http.ResponseWriter, r *http.Request) {
@@ -165,7 +175,7 @@ func (a *API) place(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, list[0])
 }
 
-// attachHours loads hours for all given places in one query and sets OpenNow.
+// attachHours loads hours and photos for the given places and sets OpenNow.
 func (a *API) attachHours(r *http.Request, places []Place) error {
 	if len(places) == 0 {
 		return nil
@@ -193,6 +203,30 @@ func (a *API) attachHours(r *http.Request, places []Place) error {
 	if err := rows.Err(); err != nil {
 		return err
 	}
+	photoRows, err := a.DB.QueryContext(r.Context(), `SELECT id, place_id, width, height, alt FROM photos ORDER BY place_id, sort_order, id`)
+	if err != nil {
+		return err
+	}
+	defer photoRows.Close()
+	for i := range places {
+		places[i].Photos = []Photo{}
+	}
+	for photoRows.Next() {
+		var photoID, placeID int64
+		var ph Photo
+		if err := photoRows.Scan(&photoID, &placeID, &ph.Width, &ph.Height, &ph.Alt); err != nil {
+			return err
+		}
+		if i, ok := idx[placeID]; ok {
+			ph.Thumb = fmt.Sprintf("/media/photos/%d/thumb.jpg", photoID)
+			ph.Large = fmt.Sprintf("/media/photos/%d/large.jpg", photoID)
+			places[i].Photos = append(places[i].Photos, ph)
+		}
+	}
+	if err := photoRows.Err(); err != nil {
+		return err
+	}
+
 	now := a.Now()
 	for i := range places {
 		places[i].OpenNow, places[i].ClosesAt = hours.Status(places[i].Hours, now)

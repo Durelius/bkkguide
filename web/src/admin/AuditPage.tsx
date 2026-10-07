@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useDocumentTitle } from "../useDocumentTitle";
 import { adminApi, type AuditEntry } from "./api";
 import { formatDateTime } from "./format";
@@ -9,10 +10,14 @@ const PAGE = 50;
 export function AuditPage() {
   useDocumentTitle("Activity log");
   const [adminFilter, setAdminFilter] = useState("");
+  // Linked from a place's "History": ?entity=place&id=12
+  const [params] = useSearchParams();
+  const entity = params.get("entity") ?? undefined;
+  const entityId = params.get("id") ?? undefined;
   const admins = useQuery({ queryKey: ["admin", "admins"], queryFn: adminApi.admins });
   const log = useInfiniteQuery({
-    queryKey: ["admin", "audit", adminFilter],
-    queryFn: ({ pageParam }) => adminApi.audit({ before: pageParam, admin: adminFilter || undefined, limit: PAGE }),
+    queryKey: ["admin", "audit", adminFilter, entity, entityId],
+    queryFn: ({ pageParam }) => adminApi.audit({ before: pageParam, admin: adminFilter || undefined, entity, entityId, limit: PAGE }),
     initialPageParam: undefined as number | undefined,
     getNextPageParam: (last) => (last.length === PAGE ? last[last.length - 1].id : undefined),
   });
@@ -39,6 +44,12 @@ export function AuditPage() {
         </label>
       </header>
 
+      {entity && entityId && (
+        <p className="admin-notice" role="status">
+          Showing the history of one {entity}.
+          <Link to="/admin/log">Show everything</Link>
+        </p>
+      )}
       {log.isLoading && <p className="admin-muted">Loading activity…</p>}
       {log.isError && <p className="form-error">{log.error.message}</p>}
       {log.isSuccess && entries.length === 0 && <p className="admin-muted">No activity yet.</p>}
@@ -68,6 +79,22 @@ export function AuditPage() {
 
 type Change = { from: unknown; to: unknown };
 
+const FIELD_LABELS: Record<string, string> = {
+  nameTh: "Thai name",
+  descriptionMd: "description",
+  lat: "location",
+  lng: "location",
+  nearestStation: "station",
+  stationLine: "line",
+  walkMinutes: "walking time",
+  priceLevel: "price level",
+  dressCode: "what to wear",
+  etiquetteTips: "good to know",
+  mustTry: "must try",
+  googleMapsUrl: "Google Maps link",
+  slug: "link name",
+};
+
 /** One readable sentence per entry. Unknown actions fall back to their raw parts. */
 function describe(e: AuditEntry): string {
   const d = e.details as Record<string, unknown>;
@@ -90,6 +117,51 @@ function describe(e: AuditEntry): string {
         if (d.password) parts.push(`Reset the password for admin ${e.entityId}`);
         return parts.join("; ") || `Updated admin ${e.entityId}`;
       }
+    }
+  }
+  if (e.entity === "place") {
+    const nameField = d.name as string | Change | undefined;
+    const name = typeof nameField === "object" && nameField ? String(nameField.to) : (nameField ?? `place ${e.entityId}`);
+    switch (e.action) {
+      case "create":
+        return `Created ${name} as ${d.status === "published" ? "published" : "a draft"}`;
+      case "delete":
+        return `Deleted ${name}`;
+      case "add_photo":
+        return `Added a photo to ${name}`;
+      case "delete_photo":
+        return `Removed a photo from ${name}`;
+      case "update_photo":
+        return `Changed a photo description on ${name}`;
+      case "reorder_photos":
+        return `Reordered the photos of ${name}`;
+      case "update": {
+        const status = d.status as Change | undefined;
+        const featured = d.featured as Change | undefined;
+        const parts: string[] = [];
+        if (status) parts.push(status.to === "published" ? `Published ${name}` : `Unpublished ${name}`);
+        if (featured) parts.push(featured.to ? `Made ${name} an editors' pick` : `Removed ${name} from editors' picks`);
+        const fields = Object.keys(d).filter((k) => !["status", "featured"].includes(k) && typeof d[k] === "object" && d[k] !== null);
+        if (fields.length) {
+          const labels = [...new Set(fields.map((k) => FIELD_LABELS[k] ?? k))];
+          parts.push(`Edited ${labels.join(", ")} of ${name}`);
+        }
+        return parts.join("; ") || `Updated ${name}`;
+      }
+    }
+  }
+  if (e.entity === "category") {
+    const nameField = d.name as string | Change | undefined;
+    const name = typeof nameField === "object" && nameField ? String(nameField.to) : (nameField ?? "a category");
+    switch (e.action) {
+      case "create":
+        return `Added category ${name}`;
+      case "delete":
+        return `Deleted category ${name}`;
+      case "reorder":
+        return "Reordered the categories";
+      case "update":
+        return `Edited category ${name}`;
     }
   }
   return `${e.action} ${e.entity} ${e.entityId}`.trim();

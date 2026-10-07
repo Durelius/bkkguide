@@ -9,7 +9,11 @@ export function PlacePreview({ place, category, onClose }: { place: Place; categ
   return (
     <article className="preview" style={{ "--cat": category?.color ?? "var(--pink-button)" } as React.CSSProperties} aria-label={place.name}>
       <div className="preview__head">
-        <span className="preview__badge">{category && <Glyph char={category.icon} />}</span>
+        {place.photos?.[0] ? (
+          <img className="preview__photo" src={place.photos[0].thumb} alt="" />
+        ) : (
+          <span className="preview__badge">{category && <Glyph char={category.icon} />}</span>
+        )}
         <div className="preview__titles">
           <h2 className="preview__name">{place.name}</h2>
           {place.nameTh && (

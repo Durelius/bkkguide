@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api, type Interval } from "../api";
+import { api, type Interval, type Photo } from "../api";
 import { Glyph, Icon } from "../components/Icon";
 import { OpenBadge, PriceLevel } from "../components/Meta";
 import { useFavourites } from "../favourites";
@@ -74,8 +74,12 @@ export function PlacePage() {
 
   return (
     <article className="place" style={{ "--cat": category?.color ?? "var(--pink-button)" } as React.CSSProperties}>
-      <div className="place__hero">
-        {category && <Glyph char={category.icon} className="place__hero-glyph" />}
+      <div className={`place__hero${p.photos.length ? " place__hero--photos" : ""}`}>
+        {p.photos.length ? (
+          <Gallery photos={p.photos} name={p.name} />
+        ) : (
+          category && <Glyph char={category.icon} className="place__hero-glyph" />
+        )}
         {category && (
           <Link to={`/c/${category.slug}`} className="place__crumb">
             <Icon name="chevron-left" /> {category.name}
@@ -185,6 +189,33 @@ export function PlacePage() {
         </div>
       )}
     </article>
+  );
+}
+
+/** Swipeable strip of photos with a counter; one photo fills the hero. */
+function Gallery({ photos, name }: { photos: Photo[]; name: string }) {
+  const [index, setIndex] = useState(0);
+  return (
+    <>
+      <div
+        className="gallery"
+        tabIndex={0}
+        aria-label={`Photos of ${name}`}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          setIndex(Math.round(el.scrollLeft / el.clientWidth));
+        }}
+      >
+        {photos.map((ph, i) => (
+          <img key={ph.large} src={ph.large} alt={ph.alt || `${name}, photo ${i + 1}`} loading={i === 0 ? "eager" : "lazy"} className="gallery__img" />
+        ))}
+      </div>
+      {photos.length > 1 && (
+        <span className="gallery__count" aria-hidden>
+          {index + 1} / {photos.length}
+        </span>
+      )}
+    </>
   );
 }
 

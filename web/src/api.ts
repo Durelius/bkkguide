@@ -9,6 +9,8 @@ export type Category = {
 
 export type Interval = { weekday: number; opens: string; closes: string };
 
+export type Photo = { thumb: string; large: string; width: number; height: number; alt: string };
+
 export type Place = {
   id: number;
   slug: string;
@@ -32,6 +34,7 @@ export type Place = {
   googleMapsUrl: string;
   featured: boolean;
   hours: Interval[];
+  photos: Photo[];
   openNow: boolean;
   closesAt?: string;
 };

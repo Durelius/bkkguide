@@ -19,6 +19,7 @@ import (
 	"bkkguide/internal/auth"
 	"bkkguide/internal/config"
 	"bkkguide/internal/db"
+	"bkkguide/internal/media"
 	"bkkguide/internal/spa"
 	"bkkguide/web"
 )
@@ -54,12 +55,18 @@ func main() {
 		}
 	}
 
+	if !media.Available() {
+		log.Printf("warning: ffmpeg not found on PATH; photo uploads will fail")
+	}
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger, middleware.Recoverer, middleware.Compress(5))
 	authSvc := &auth.Service{DB: conn, Secure: !cfg.Dev, Now: time.Now}
 	r.Mount("/api/admin", (&admin.Handler{DB: conn, Auth: authSvc, Limiter: auth.NewLoginLimiter()}).Routes())
 	r.Mount("/api", (&api.API{DB: conn, Site: site, Now: time.Now}).Routes())
-	r.Handle("/media/*", http.StripPrefix("/media/", http.FileServer(http.Dir(cfg.UploadsDir))))
+	r.Get("/media/photos/{photoId}/{size}.jpg", func(w http.ResponseWriter, r *http.Request) {
+		media.ServePhoto(w, r, conn, true)
+	})
 	r.Handle("/*", spa.Handler(web.Dist()))
 
 	srv := &http.Server{Addr: cfg.Addr, Handler: r, ReadHeaderTimeout: 10 * time.Second}

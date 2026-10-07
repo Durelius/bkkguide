@@ -16,6 +16,7 @@ type Props = {
 
 export function PlaceCard({ place, category, saved = false, onToggleSave, highlighted = false, onHover, id }: Props) {
   const color = category?.color ?? "var(--pink-button)";
+  const cover = place.photos?.[0];
   return (
     <article
       id={id}
@@ -24,8 +25,12 @@ export function PlaceCard({ place, category, saved = false, onToggleSave, highli
       onMouseEnter={onHover && (() => onHover(true))}
       onMouseLeave={onHover && (() => onHover(false))}
     >
-      <div className="place-card__visual">
-        {category && <Glyph char={category.icon} className="place-card__glyph" />}
+      <div className={`place-card__visual${cover ? " place-card__visual--photo" : ""}`}>
+        {cover ? (
+          <img src={cover.thumb} alt={cover.alt} loading="lazy" className="place-card__img" />
+        ) : (
+          category && <Glyph char={category.icon} className="place-card__glyph" />
+        )}
         {place.featured && (
           <span className="place-card__featured">
             <Icon name="star" /> editors' pick

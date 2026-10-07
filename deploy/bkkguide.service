@@ -8,7 +8,6 @@ Group=bkkguide
 ExecStart=/usr/local/bin/bkkguide
 Environment=BKK_ADDR=127.0.0.1:8080
 Environment=BKK_DB=/var/lib/bkkguide/bkkguide.db
-Environment=BKK_UPLOADS=/var/lib/bkkguide/uploads
 StateDirectory=bkkguide
 Restart=on-failure
 NoNewPrivileges=true

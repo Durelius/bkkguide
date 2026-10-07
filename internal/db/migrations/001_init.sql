@@ -77,14 +77,18 @@ CREATE TABLE place_hours (
 );
 CREATE INDEX place_hours_place ON place_hours(place_id);
 
+-- Photos are stored in the database as resized JPEGs (see internal/media);
+-- originals are never kept. A photo's bytes never change, so its URL is cacheable forever.
 CREATE TABLE photos (
   id         INTEGER PRIMARY KEY,
   place_id   INTEGER NOT NULL REFERENCES places(id) ON DELETE CASCADE,
-  file_key   TEXT NOT NULL,
+  thumb      BLOB NOT NULL,  -- long edge 640 px
+  large      BLOB NOT NULL,  -- long edge 1600 px
   width      INTEGER NOT NULL,
   height     INTEGER NOT NULL,
   alt        TEXT NOT NULL DEFAULT '',
-  sort_order INTEGER NOT NULL DEFAULT 0
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX photos_place ON photos(place_id, sort_order);
 

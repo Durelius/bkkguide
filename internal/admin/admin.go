@@ -37,6 +37,8 @@ func (h *Handler) Routes() http.Handler {
 		r.Patch("/admins/{id}", h.updateAdmin)
 		r.Delete("/admins/{id}", h.deleteAdmin)
 		r.Get("/audit", h.listAudit)
+		h.placeRoutes(r)
+		h.categoryRoutes(r)
 	})
 	return r
 }
@@ -358,7 +360,7 @@ type AuditEntry struct {
 	Details   json.RawMessage `json:"details"`
 }
 
-// listAudit pages newest-first: ?before=<id>&limit=<n>&admin=<studentId>&entity=<name>.
+// listAudit pages newest-first: ?before=<id>&limit=<n>&admin=<studentId>&entity=<name>&entityId=<id>.
 func (h *Handler) listAudit(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	limit, _ := strconv.Atoi(q.Get("limit"))
@@ -378,6 +380,10 @@ func (h *Handler) listAudit(w http.ResponseWriter, r *http.Request) {
 	if e := q.Get("entity"); e != "" {
 		where = append(where, "l.entity = ?")
 		args = append(args, e)
+	}
+	if id := q.Get("entityId"); id != "" {
+		where = append(where, "l.entity_id = ?")
+		args = append(args, id)
 	}
 	args = append(args, limit)
 	rows, err := h.DB.QueryContext(r.Context(), `SELECT l.id, l.at, l.admin_id, a.full_name, l.action, l.entity, l.entity_id, l.details
