@@ -1,0 +1,228 @@
+.place-note {
+  padding: var(--s6) var(--s4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s3);
+}
+.place-note h1 {
+  font-size: var(--fs-xl);
+}
+
+.place__hero {
+  position: relative;
+  height: 180px;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 120%, rgb(255 255 255 / 0.1) 0 3deg, transparent 3deg 9deg),
+    var(--cat);
+}
+.place__hero-glyph {
+  font-size: 4rem;
+  color: rgb(255 255 255 / 0.92);
+}
+.place__crumb {
+  position: absolute;
+  left: var(--s3);
+  top: var(--s3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.place__layout {
+  display: grid;
+  gap: var(--s5);
+  padding: var(--s5) var(--s4) var(--s7);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.place__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.place__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s2);
+}
+.place__pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--pink-text);
+}
+.place__name {
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.place__th {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s2);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--fs-lg);
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.place__th-hint {
+  font-family: var(--font);
+  font-size: var(--fs-xs);
+  color: var(--pink-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.place__chips,
+.place__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.place__summary {
+  font-size: var(--fs-lg);
+  max-width: 60ch;
+  line-height: 1.45;
+}
+.place__description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  max-width: 68ch;
+}
+.place__section h2,
+.place__box h2 {
+  font-size: var(--fs-md);
+  font-weight: 800;
+  margin-bottom: var(--s3);
+}
+.place__tips {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.place__tips div {
+  padding: var(--s3) var(--s4);
+  border-left: 3px solid var(--cat);
+  background: var(--card);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.place__tips dt {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+.place__tips dd {
+  margin: 2px 0 0;
+  max-width: 64ch;
+}
+
+.place__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.place__box {
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+.place__station {
+  display: flex;
+  gap: var(--s2);
+  align-items: baseline;
+}
+.place__muted {
+  color: var(--ink-muted);
+  font-size: var(--fs-sm);
+}
+.place__minimap {
+  position: relative;
+  height: 220px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.hours {
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.hours th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ink-muted);
+  padding: 3px var(--s4) 3px 0;
+}
+.hours td {
+  padding: 3px 0;
+}
+.hours__today th,
+.hours__today td {
+  color: var(--ink);
+  font-weight: 700;
+}
+.hours__today th::before {
+  content: ">";
+  margin-left: -1.2ch;
+  margin-right: 0.2ch;
+  color: var(--pink);
+}
+
+@media (min-width: 900px) {
+  .place__hero {
+    height: 260px;
+  }
+  .place__layout {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--s7);
+    padding: var(--s6) var(--s5) var(--s7);
+  }
+  .place__side {
+    position: sticky;
+    top: var(--s5);
+    align-self: start;
+  }
+}
+
+/* Full-screen Thai name for showing a taxi or motorbike driver. */
+.thai-card {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s4);
+  padding: var(--s5);
+  background: var(--card);
+  text-align: center;
+}
+.thai-card__name {
+  font-size: clamp(2.5rem, 11vw, 5rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.thai-card__sub {
+  color: var(--ink-muted);
+}

@@ -1,0 +1,68 @@
+.category {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--s4) var(--s4) var(--s6);
+}
+.category__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-bottom: var(--s4);
+}
+.category__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+}
+.category__glyph {
+  color: var(--cat);
+  font-size: 0.9em;
+  margin-right: 0.25em; /* Nerd Font glyphs overhang their advance width */
+}
+.category__count {
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+.category__maplink {
+  flex: none;
+  height: 40px;
+  padding: 0 14px;
+}
+.category__note {
+  color: var(--ink-muted);
+  padding: var(--s4) 0;
+}
+.category__list {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+@media (min-width: 900px) {
+  .category {
+    padding: var(--s6) var(--s5) var(--s7);
+  }
+  .category__head {
+    margin-bottom: var(--s5);
+  }
+  .category__title {
+    font-size: var(--fs-2xl);
+  }
+  .category__list {
+    gap: var(--s5);
+  }
+}
+
+.category-missing {
+  padding: var(--s6) var(--s4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s4);
+}
+.category-missing h1 {
+  font-size: var(--fs-xl);
+}

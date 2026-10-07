@@ -1,0 +1,95 @@
+.map-home {
+  position: absolute;
+  inset: 0;
+}
+/* Category toggles: a scrollable strip on phones, a row on desktop. */
+.map-home__filters {
+  position: absolute;
+  z-index: 3; /* above MapLibre's controls */
+  top: var(--s3);
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: var(--s2);
+  padding: 0 var(--s3);
+  overflow-x: auto;
+  scrollbar-width: none;
+  pointer-events: none;
+}
+.map-filter {
+  pointer-events: auto;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  height: 38px;
+  padding: 0 14px;
+  border: 2px solid var(--card);
+  border-radius: var(--r-pill);
+  background: var(--card);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.map-filter .nf {
+  color: var(--cat);
+}
+.map-filter__count {
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+.map-filter[aria-pressed="false"] {
+  background: var(--bg-sunk);
+  border-color: var(--bg-sunk);
+  color: var(--ink-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-faint);
+}
+.map-filter[aria-pressed="false"] .nf {
+  color: var(--ink-faint);
+}
+
+.map-home__preview {
+  position: absolute;
+  z-index: 3;
+  left: var(--s3);
+  right: var(--s3);
+  bottom: var(--s3);
+}
+@media (min-width: 900px) {
+  .map-home__filters {
+    top: var(--s4);
+    padding: 0 var(--s4);
+  }
+  .map-home__preview {
+    left: var(--s4);
+    right: auto;
+    bottom: auto;
+    top: calc(var(--s4) + 38px + var(--s3));
+    width: 360px;
+  }
+}
+
+.map-home__error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 32ch;
+  padding: var(--s4);
+  border-radius: var(--r-md);
+  background: var(--card);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+/* The preview card covers the corner controls on phones; hide them while it is open. */
+.map-home:has(.preview) .maplibregl-ctrl-bottom-right {
+  visibility: hidden;
+}
+@media (min-width: 900px) {
+  .map-home:has(.preview) .maplibregl-ctrl-bottom-right {
+    visibility: visible;
+  }
+}

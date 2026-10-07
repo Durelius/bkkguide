@@ -1,0 +1,65 @@
+.map-pin {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0 9px;
+  border-radius: 11px;
+  background: var(--cat);
+  color: #fff;
+  border: 2px solid var(--card);
+  box-shadow: 0 4px 10px -4px rgb(36 22 29 / 0.6);
+  transition: transform 0.15s ease;
+}
+.map-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 10px;
+  height: 10px;
+  background: var(--cat);
+  border-right: 2px solid var(--card);
+  border-bottom: 2px solid var(--card);
+  transform: translateX(-50%) rotate(45deg);
+}
+.map-pin__glyph {
+  font-size: 15px;
+}
+.map-pin--selected {
+  transform: translateY(-4px) scale(1.08);
+  z-index: 2;
+}
+.map-pin__label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.map-pin--button {
+  font: inherit;
+  cursor: pointer;
+}
+.map-pin--button:not(.map-pin--selected) .map-pin__label {
+  display: none;
+}
+.map-pin--button:hover {
+  transform: translateY(-2px);
+}
+.map-pin--button.map-pin--selected:hover {
+  transform: translateY(-4px) scale(1.08);
+}
+.map-pin-anchor {
+  padding-bottom: 8px; /* room for the tail, so the tip lands on the coordinate */
+}
+.map-pin-anchor--selected {
+  z-index: 3;
+}
+.map-pin-anchor--hovered {
+  z-index: 2;
+}
+.map-pin--button.map-pin--hovered:not(.map-pin--selected) {
+  transform: translateY(-3px) scale(1.12);
+  box-shadow: 0 0 0 3px var(--pink), 0 4px 10px -4px rgb(36 22 29 / 0.6);
+}

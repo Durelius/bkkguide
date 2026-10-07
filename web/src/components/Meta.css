@@ -1,0 +1,42 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  color: var(--ink);
+}
+.chip .nf {
+  color: var(--ink-muted);
+}
+.chip__sub {
+  color: var(--ink-muted);
+}
+.chip__faint {
+  color: var(--ink-faint);
+}
+.chip--price {
+  gap: 0;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.chip--open {
+  border-color: transparent;
+  background: #d7eadf;
+  color: var(--open);
+  font-weight: 700;
+}
+.chip__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.chip--closed {
+  color: var(--ink-muted);
+  border-style: dashed;
+}

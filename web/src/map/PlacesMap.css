@@ -1,0 +1,93 @@
+.places-map,
+.places-map__canvas {
+  position: absolute;
+  inset: 0;
+}
+.places-map__canvas {
+  background: var(--bg-sunk);
+}
+.places-map .maplibregl-canvas:focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: -3px;
+}
+.places-map .maplibregl-ctrl-group {
+  background: var(--card);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow);
+}
+.places-map .maplibregl-ctrl-attrib {
+  font-family: var(--font);
+  font-size: 10px;
+}
+.places-map__error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 32ch;
+  padding: var(--s4);
+  border-radius: var(--r-md);
+  background: var(--card);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.locate-ctrl .locate-ctrl__btn {
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.locate-ctrl .locate-ctrl__btn[data-status="found"] {
+  color: var(--pink-text);
+}
+.locate-ctrl .locate-ctrl__btn[data-status="locating"] {
+  color: var(--pink);
+  animation: locate-pulse 0.9s ease-in-out infinite alternate;
+}
+@keyframes locate-pulse {
+  to {
+    opacity: 0.35;
+  }
+}
+.places-map .maplibregl-ctrl-bottom-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.places-map .maplibregl-ctrl-bottom-right .locate-ctrl {
+  border-radius: 50%;
+}
+.places-map .maplibregl-ctrl-bottom-right .locate-ctrl button {
+  border-radius: 50%;
+}
+
+.you-are-here {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--pink);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 0 rgb(217 68 127 / 0.5), 0 2px 6px rgb(36 22 29 / 0.4);
+  animation: here-ring 2s ease-out infinite;
+}
+@keyframes here-ring {
+  to {
+    box-shadow: 0 0 0 16px rgb(217 68 127 / 0), 0 2px 6px rgb(36 22 29 / 0.4);
+  }
+}
+
+.places-map__notice {
+  position: absolute;
+  left: 50%;
+  bottom: var(--s5);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 2 * var(--s4));
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--card);
+  font-size: var(--fs-sm);
+  z-index: 5;
+}

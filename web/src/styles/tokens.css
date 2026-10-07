@@ -1,0 +1,48 @@
+:root {
+  /* Surfaces */
+  --bg: #e4d6db;          /* rose dust: the page */
+  --bg-sunk: #d9c7ce;     /* wells, inputs, map placeholder */
+  --card: #f5eef1;        /* raised surfaces */
+  --line: #c9b3bc;        /* hairlines on bg */
+  --line-strong: #24161d;
+
+  /* Ink */
+  --ink: #24161d;         /* 12.4:1 on bg */
+  --ink-muted: #6b5560;   /* 4.8:1 on bg */
+  --ink-faint: #a8939c;   /* decoration only, never body text */
+
+  /* Pink */
+  --pink: #d9447f;        /* fills, rays, focus: not for text on bg */
+  --pink-text: #a3245a;   /* links and pink text: 5.1:1 on bg */
+  --pink-button: #be3570; /* white text on it: 5.3:1 */
+  --pink-wash: #f2c9d9;
+
+  --open: #1f7a4d;
+
+  /* Type: one family, scale ~1.25 */
+  --font: "JBM NF", "IBM Plex Sans Thai", ui-monospace, monospace;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-md: 0.9375rem;
+  --fs-lg: 1.1875rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2.125rem;
+  --lh: 1.55;
+
+  /* Space and shape */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+  --shadow: 0 1px 0 var(--line), 0 6px 18px -10px rgb(36 22 29 / 0.35);
+
+  --tabbar-h: 64px;
+  --topbar-h: 56px;
+}

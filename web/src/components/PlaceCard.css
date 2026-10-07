@@ -1,0 +1,121 @@
+.place-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: var(--card);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+/* Placeholder visual until photos exist: category colour with a ray pattern. */
+.place-card__visual {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 115%, rgb(255 255 255 / 0.1) 0 4deg, transparent 4deg 12deg),
+    var(--cat);
+  display: grid;
+  place-items: center;
+}
+.place-card__glyph {
+  font-size: 2.75rem;
+  color: rgb(255 255 255 / 0.92);
+}
+.place-card__featured {
+  position: absolute;
+  left: var(--s3);
+  top: var(--s3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--card);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+.place-card__featured .nf {
+  color: var(--pink);
+}
+.place-card__tools {
+  position: absolute;
+  right: var(--s3);
+  top: var(--s3);
+  display: flex;
+  gap: var(--s2);
+}
+.place-card__tool {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 1.05rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.place-card__tool:hover {
+  background: #fff;
+}
+.place-card__tool:active {
+  transform: scale(0.88);
+}
+.place-card__save {
+  color: var(--pink-text);
+}
+.place-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding: var(--s4) var(--s4) var(--s4);
+}
+.place-card__name {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+/* Whole card is the link target; the save button sits above it. */
+.place-card__name a {
+  color: inherit;
+  text-decoration: none;
+}
+.place-card__name a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.place-card__tools,
+.place-card__featured {
+  z-index: 1;
+}
+.place-card:has(a:hover) .place-card__name a {
+  text-decoration: underline;
+  text-decoration-color: var(--pink);
+  text-decoration-thickness: 2px;
+}
+.place-card__th {
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+.place-card__summary {
+  margin-top: var(--s1);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.place-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s3);
+}
+.place-card--highlighted {
+  box-shadow: 0 0 0 3px var(--pink), var(--shadow);
+}

@@ -1,0 +1,20 @@
+.sunrise__rays,
+.sunrise__sun {
+  fill: var(--pink);
+}
+.sunrise__ground {
+  fill: var(--ink);
+}
+.logo {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: var(--s2);
+  color: var(--ink);
+  text-decoration: none;
+}
+.logo__word {
+  font-weight: 800;
+  font-size: var(--fs-lg);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}

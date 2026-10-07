@@ -1,0 +1,19 @@
+/* JetBrains Mono Nerd Font, subset by scripts/build-fonts.sh (text + icons from web/icons.json). */
+@font-face {
+  font-family: "JBM NF";
+  src: url("/fonts/jbm-nf-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JBM NF";
+  src: url("/fonts/jbm-nf-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JBM NF";
+  src: url("/fonts/jbm-nf-extrabold.woff2") format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}

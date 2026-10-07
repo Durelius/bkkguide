@@ -1,0 +1,23 @@
+.shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100dvh;
+}
+.shell__main {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+}
+.shell__top--desktop {
+  display: none;
+}
+@media (min-width: 900px) {
+  .shell__top--mobile,
+  .shell__tabs {
+    display: none;
+  }
+  .shell__top--desktop {
+    display: block;
+  }
+}
