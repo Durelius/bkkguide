@@ -3,6 +3,16 @@ package db
 import (
 	"database/sql"
 	"fmt"
+
+	"bkkguide/internal/auth"
+)
+
+// Development admin, created by -seed (never used in production, where the
+// first admin comes from -create-admin).
+const (
+	DevAdminID       = "dev001"
+	DevAdminName     = "Dev Admin"
+	DevAdminPassword = "bkk-dev-password"
 )
 
 // Development seed data. Coordinates and hours are approximate placeholders;
@@ -66,6 +76,14 @@ func Seed(conn *sql.DB) error {
 		return err
 	}
 	defer tx.Rollback()
+
+	hash, err := auth.HashPassword(DevAdminPassword)
+	if err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`INSERT INTO admins (student_id, full_name, password_hash) VALUES (?, ?, ?)`, DevAdminID, DevAdminName, hash); err != nil {
+		return err
+	}
 
 	catIDs := map[string]int64{}
 	for i, c := range seedCategories {

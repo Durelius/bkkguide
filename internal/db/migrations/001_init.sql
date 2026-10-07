@@ -7,19 +7,36 @@ CREATE TABLE categories (
   sort_order INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE TABLE users (
-  id            INTEGER PRIMARY KEY,
-  email         TEXT NOT NULL UNIQUE COLLATE NOCASE,
-  name          TEXT NOT NULL,
+-- Admins log in with their student ID, which is also their primary key.
+CREATE TABLE admins (
+  student_id    TEXT PRIMARY KEY COLLATE NOCASE,
+  full_name     TEXT NOT NULL,
   password_hash TEXT NOT NULL,
+  active        INTEGER NOT NULL DEFAULT 1,
   created_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE sessions (
   token_hash TEXT PRIMARY KEY,
-  user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  student_id TEXT NOT NULL REFERENCES admins(student_id) ON DELETE CASCADE,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
   expires_at TEXT NOT NULL
 );
+CREATE INDEX sessions_admin ON sessions(student_id);
+
+-- Every admin action. admin_id is a plain student ID (no foreign key) so the
+-- history survives when an admin is removed.
+CREATE TABLE audit_log (
+  id        INTEGER PRIMARY KEY,
+  at        TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  admin_id  TEXT NOT NULL COLLATE NOCASE,
+  action    TEXT NOT NULL,
+  entity    TEXT NOT NULL DEFAULT '',
+  entity_id TEXT NOT NULL DEFAULT '',
+  details   TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX audit_log_admin ON audit_log(admin_id, id);
+CREATE INDEX audit_log_entity ON audit_log(entity, entity_id, id);
 
 CREATE TABLE places (
   id              INTEGER PRIMARY KEY,
@@ -44,8 +61,8 @@ CREATE TABLE places (
   google_maps_url TEXT NOT NULL DEFAULT '',
   status          TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
   featured        INTEGER NOT NULL DEFAULT 0,
-  created_by      INTEGER REFERENCES users(id),
-  updated_by      INTEGER REFERENCES users(id),
+  created_by      TEXT, -- student ID; see audit_log for the full history
+  updated_by      TEXT,
   created_at      TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );

@@ -1,16 +1,20 @@
-.PHONY: dev api web build test clean
+.PHONY: dev api admin web build test clean
 
 BIN := bin/bkkguide
 
 # Run the Go API (seeded) and the Vite dev server together. Open http://localhost:5173
 dev: web/node_modules web/dist
 	@trap 'kill 0' EXIT; \
-	go run ./cmd/server -seed & \
+	BKK_DEV=1 go run ./cmd/server -seed & \
 	(cd web && npm run dev) & \
 	wait
 
 api: web/dist
-	go run ./cmd/server -seed
+	BKK_DEV=1 go run ./cmd/server -seed
+
+# Create an admin (the first one, or a way back in). Uses BKK_DB like the server.
+admin: web/dist
+	go run ./cmd/server -create-admin
 
 web/node_modules: web/package.json
 	cd web && npm install

@@ -7,6 +7,7 @@ import { PlacePage } from "./pages/PlacePage";
 
 // MapLibre is ~1 MB, so map pages load it on demand.
 const MapHome = lazy(() => import("./pages/MapHome").then((m) => ({ default: m.MapHome })));
+const AdminApp = lazy(() => import("./admin/AdminApp").then((m) => ({ default: m.AdminApp })));
 const StyleTile = lazy(() => import("./pages/StyleTile").then((m) => ({ default: m.StyleTile })));
 
 export function App() {
@@ -15,6 +16,7 @@ export function App() {
       <Suspense fallback={null}>
         <Routes>
           <Route path="/styletile" element={<StyleTile />} />
+          <Route path="/admin/*" element={<AdminApp />} />
           <Route element={<AppShell />}>
             <Route index element={<MapHome />} />
             <Route path="c/:slug" element={<CategoryPage />} />

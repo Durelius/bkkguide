@@ -14,7 +14,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"bkkguide/internal/admin"
 	"bkkguide/internal/api"
+	"bkkguide/internal/auth"
 	"bkkguide/internal/config"
 	"bkkguide/internal/db"
 	"bkkguide/internal/spa"
@@ -23,6 +25,7 @@ import (
 
 func main() {
 	seed := flag.Bool("seed", false, "insert development data into an empty database")
+	newAdmin := flag.Bool("create-admin", false, "create an admin interactively, then exit")
 	flag.Parse()
 
 	cfg := config.Load()
@@ -39,6 +42,12 @@ func main() {
 		log.Fatalf("open db: %v", err)
 	}
 	defer conn.Close()
+	if *newAdmin {
+		if err := createAdmin(conn); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 	if *seed {
 		if err := db.Seed(conn); err != nil {
 			log.Fatalf("seed: %v", err)
@@ -47,6 +56,8 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger, middleware.Recoverer, middleware.Compress(5))
+	authSvc := &auth.Service{DB: conn, Secure: !cfg.Dev, Now: time.Now}
+	r.Mount("/api/admin", (&admin.Handler{DB: conn, Auth: authSvc, Limiter: auth.NewLoginLimiter()}).Routes())
 	r.Mount("/api", (&api.API{DB: conn, Site: site, Now: time.Now}).Routes())
 	r.Handle("/media/*", http.StripPrefix("/media/", http.FileServer(http.Dir(cfg.UploadsDir))))
 	r.Handle("/*", spa.Handler(web.Dist()))
