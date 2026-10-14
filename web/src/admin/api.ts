@@ -114,6 +114,7 @@ export const adminApi = {
   updatePlace: (id: number, p: PlaceInput) => request<AdminPlace>("PUT", `/places/${id}`, p),
   patchPlace: (id: number, patch: { status?: "draft" | "published"; featured?: boolean }) => request<void>("PATCH", `/places/${id}`, patch),
   deletePlace: (id: number) => request<void>("DELETE", `/places/${id}`),
+  resolveMapsUrl: (url: string) => request<{ url: string; lat: number; lng: number }>("GET", `/maps/resolve?url=${encodeURIComponent(url)}`),
   uploadPhoto: async (placeId: number, file: File, alt: string) => {
     const form = new FormData();
     form.append("file", file);

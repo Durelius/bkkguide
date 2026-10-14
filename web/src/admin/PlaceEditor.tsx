@@ -1,12 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "../components/Icon";
 import { useDocumentTitle } from "../useDocumentTitle";
 import { adminApi, type AdminPlace, type Photo, type PlaceInput } from "./api";
 import { formatDateTime } from "./format";
 import { HoursEditor } from "./HoursEditor";
-import { coordsFromMapsUrl } from "./mapsUrl";
+import { coordsFromMapsUrl, isShortMapsUrl } from "./mapsUrl";
 import { PhotoManager } from "./PhotoManager";
 
 const MapPicker = lazy(() => import("./MapPicker"));
@@ -61,6 +61,8 @@ export function PlaceEditor() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [linkStatus, setLinkStatus] = useState<string | null>(null);
+  const linkLookup = useRef<{ timer?: number; seq: number }>({ seq: 0 });
 
   useDocumentTitle(isNew ? "New place" : form.name || "Edit place");
 
@@ -94,6 +96,27 @@ export function PlaceEditor() {
   const set = <K extends keyof PlaceInput>(key: K, value: PlaceInput[K]) => {
     setForm((f) => ({ ...f, [key]: value }));
     setNotice(null);
+  };
+
+  const onMapsLink = (url: string) => {
+    const c = coordsFromMapsUrl(url);
+    setForm((f) => ({ ...f, googleMapsUrl: url, ...(c ?? {}) }));
+    const lookup = linkLookup.current;
+    window.clearTimeout(lookup.timer);
+    const seq = ++lookup.seq;
+    setLinkStatus(null);
+    if (c || !isShortMapsUrl(url)) return;
+    setLinkStatus("Looking up link…");
+    lookup.timer = window.setTimeout(async () => {
+      try {
+        const { lat, lng } = await adminApi.resolveMapsUrl(url.trim());
+        if (seq !== lookup.seq) return;
+        setForm((f) => ({ ...f, lat, lng }));
+        setLinkStatus(null);
+      } catch (err) {
+        if (seq === lookup.seq) setLinkStatus(err instanceof Error ? err.message : "Couldn't look up that link.");
+      }
+    }, 400);
   };
 
   const save = async (e: React.FormEvent) => {
@@ -214,7 +237,7 @@ export function PlaceEditor() {
 
       <section className="admin-card editor__section">
         <h2>Location</h2>
-        <p className="admin-muted">Click the map to drop the pin, then drag it to the entrance. Pasting a Google Maps link with coordinates also moves the pin.</p>
+        <p className="admin-muted">Click the map to drop the pin, then drag it to the entrance. Pasting a Google Maps link, including a share link, also moves the pin.</p>
         <div className="editor__map">
           <Suspense fallback={<div className="map-picker" />}>
             <MapPicker
@@ -232,13 +255,10 @@ export function PlaceEditor() {
             <input
               type="url"
               value={form.googleMapsUrl}
-              onChange={(e) => {
-                const url = e.target.value;
-                const c = coordsFromMapsUrl(url);
-                setForm((f) => ({ ...f, googleMapsUrl: url, ...(c ?? {}) }));
-              }}
-              placeholder="https://maps.google.com/…"
+              onChange={(e) => onMapsLink(e.target.value)}
+              placeholder="https://maps.app.goo.gl/…"
             />
+            {linkStatus && <small>{linkStatus}</small>}
           </label>
           <label className="field">
             <span>Address</span>

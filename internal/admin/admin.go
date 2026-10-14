@@ -37,6 +37,7 @@ func (h *Handler) Routes() http.Handler {
 		r.Patch("/admins/{id}", h.updateAdmin)
 		r.Delete("/admins/{id}", h.deleteAdmin)
 		r.Get("/audit", h.listAudit)
+		r.Get("/maps/resolve", h.resolveMaps)
 		h.placeRoutes(r)
 		h.categoryRoutes(r)
 	})
