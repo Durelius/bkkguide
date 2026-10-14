@@ -9,6 +9,8 @@ import "./styles/base.css";
 import { App } from "./App";
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 60_000 } } });
+// Admin pages always show fresh data: every tab switch remounts the page and refetches.
+queryClient.setQueryDefaults(["admin"], { refetchOnMount: "always" });
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

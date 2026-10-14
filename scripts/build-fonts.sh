@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Rebuild the self-hosted fonts in web/public/fonts from JetBrains Mono Nerd Font.
-# Run again after adding icons to web/icons.json.
+# Run again after adding icons to web/icons.json, and bump ?v= in fonts.css and index.html (fonts are cached immutable).
 # Needs: python3 with `pip install fonttools brotli`, curl, tar.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -22,4 +22,5 @@ for w in Regular Bold ExtraBold; do
   $PY -m fontTools.subset "$TMP/JetBrainsMonoNerdFont-$w.ttf" --unicodes="$TEXT,$ICONS" \
     --flavor=woff2 --layout-features='*' --output-file="$OUT/jbm-nf-$(echo $w | tr A-Z a-z).woff2"
 done
+$PY scripts/center-icons.py web/icons.json "$OUT"/*.woff2
 ls -lh "$OUT"
