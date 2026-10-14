@@ -1,4 +1,4 @@
-.PHONY: dev api admin web build test clean
+.PHONY: dev api admin web build test deploy clean
 
 BIN := bin/bkkguide
 
@@ -29,6 +29,10 @@ web/dist:
 build: web/node_modules
 	cd web && npm run build
 	CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o $(BIN) ./cmd/server
+
+# Build, upload and restart on bkkguide.wilhelm.my (see deploy/deploy.sh).
+deploy:
+	./deploy/deploy.sh
 
 test: web/dist
 	go test ./...

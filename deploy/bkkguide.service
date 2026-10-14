@@ -1,12 +1,13 @@
 [Unit]
-Description=The BKK Guide
+Description=The BKK Guide (bkkguide.wilhelm.my)
 After=network.target
 
 [Service]
 User=bkkguide
 Group=bkkguide
 ExecStart=/usr/local/bin/bkkguide
-Environment=BKK_ADDR=127.0.0.1:8080
+Environment=BKK_ADDR=127.0.0.1:8097
+Environment=BKK_BASE_URL=https://bkkguide.wilhelm.my
 Environment=BKK_DB=/var/lib/bkkguide/bkkguide.db
 StateDirectory=bkkguide
 Restart=on-failure
